@@ -1,0 +1,25 @@
+{
+    "name": "aegisfang/migrations",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "AegisFang\\Migrations\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Trevor Thompson",
+            "email": "tsquare1717@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpunit/phpunit": "^7.5"
+    },
+    "scripts": {
+        "sniff": "phpcs -p --colors --standard=ruleset.xml",
+        "check": "composer sniff && composer test",
+        "test": "vendor/bin/phpunit --colors=always --testsuite migrations"
+    }
+}
