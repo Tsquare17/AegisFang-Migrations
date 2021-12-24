@@ -87,6 +87,9 @@ class BuilderTest extends TestCase
         $table->createRelationships();
 
         $this->assertTrue($isCreated);
+
+        $foreignKeyExists = $table->foreignKeyExists('foo_id', 'foo', 'foo_id');
+        $this->assertTrue($foreignKeyExists);
     }
 
     /** @test */
@@ -109,7 +112,7 @@ class BuilderTest extends TestCase
     }
 
     /** @test */
-    public function can_delete_table(): void
+    public function can_delete_tables(): void
     {
         $isDestroyed = MysqlBuilder::destroy($this->connection, 'aegistest');
 

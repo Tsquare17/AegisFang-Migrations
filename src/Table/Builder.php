@@ -42,8 +42,6 @@ abstract class Builder
 
 
     /**
-     * Builder constructor.
-     *
      * @param AdapterInterface $adapter
      * @param string $table
      * @param Blueprint|null $blueprint
@@ -76,6 +74,28 @@ abstract class Builder
     public function tableExists(): bool
     {
         return $this->connectionAdapter->tableExists($this->table);
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return bool
+     */
+    public function columnExists(string $column): bool
+    {
+        return $this->connectionAdapter->columnExists($this->table, $column);
+    }
+
+    /**
+     * @param string $column
+     * @param string $referencedTable
+     * @param string $referencedColumn
+     *
+     * @return bool
+     */
+    public function foreignKeyExists(string $column, string $referencedTable, string $referencedColumn): bool
+    {
+        return $this->connectionAdapter->foreignKeyExists($this->table, $column, $referencedTable, $referencedColumn);
     }
 
     /**
