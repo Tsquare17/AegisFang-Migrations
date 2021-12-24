@@ -81,7 +81,9 @@ class BuilderTest extends TestCase
         $blueprint = new MysqlBlueprint();
         $blueprint->int('foo_id')
             ->references('foo_id')
-            ->on('foo');
+            ->on('foo')
+            ->onUpdate('CASCADE')
+            ->onDelete('CASCADE');
         $table = new MysqlBuilder($this->connection, 'bar', $blueprint);
         $isCreated = $table->createTable();
         $table->createRelationships();

@@ -34,9 +34,9 @@ class MysqlBuilder extends Builder
     {
         $i = 0;
         foreach ($this->relationships as $relationship) {
-            $this->statement = 'ALTER TABLE ' . $relationship[2] . ' ADD';
-            $this->statement .= ' KEY ' .
-                $relationship[0] . '_' . $relationship[1] . '_' . $i . '(' . $relationship[0] . ');';
+            $this->statement = 'ALTER TABLE ' . $relationship['referencedTable'] . ' ADD';
+            $this->statement .= ' KEY ' . $relationship['column'] . '_' . $relationship['referencedColumn'] . '_' . $i .
+                '(' . $relationship['column'] . ');';
 
             $this->execute();
 
@@ -44,8 +44,16 @@ class MysqlBuilder extends Builder
         }
 
         foreach ($this->relationships as $relationship) {
-            $this->statement = 'ALTER TABLE ' . $this->table . ' ADD FOREIGN KEY(' . $relationship[0]
-                . ') REFERENCES ' . $relationship[2] . '(' . $relationship[1] . ');';
+            $this->statement = 'ALTER TABLE ' . $this->table . ' ADD FOREIGN KEY(' . $relationship['column']
+                . ') REFERENCES ' . $relationship['referencedTable'] . '(' . $relationship['referencedColumn'] . ')';
+
+            if (isset($relationship['update'])) {
+                $this->statement .= " ON UPDATE {$relationship['update']}";
+            }
+
+            if (isset($relationship['delete'])) {
+                $this->statement .= " ON DELETE {$relationship['delete']}";
+            }
 
             $this->execute();
         }

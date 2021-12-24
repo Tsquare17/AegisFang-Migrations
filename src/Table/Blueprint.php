@@ -130,20 +130,20 @@ abstract class Blueprint
     ): self;
 
     /**
-     * @param $id
+     * @param $column
      *
      * @return $this
      */
-    public function references($id): self
+    public function references($column): self
     {
-        // Set foreign key on last registered column, referencing $id.
+        // Set foreign key on last registered column, referencing $column.
         end($this->columns);
 
         $key = key($this->columns);
 
         $this->relationships[] = [
             $key,
-            $id,
+            $column,
         ];
 
         reset($this->columns);
@@ -170,11 +170,11 @@ abstract class Blueprint
     }
 
     /**
-     * @param $id
+     * @param $action
      *
      * @return $this
      */
-    abstract public function onUpdate($id): self;
+    abstract public function onUpdate($action): self;
 
     /**
      * @param $action

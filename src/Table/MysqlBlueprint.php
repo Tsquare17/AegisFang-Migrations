@@ -76,20 +76,20 @@ class MysqlBlueprint extends Blueprint
     }
 
     /**
-     * @param $id
+     * @param $column
      *
      * @return $this
      */
-    public function references($id): Blueprint
+    public function references($column): Blueprint
     {
-        // Set foreign key on last registered column, referencing $id.
+        // Set foreign key on last registered column, referencing $column.
         end($this->columns);
 
         $key = key($this->columns);
 
         $this->relationships[] = [
-            $key,
-            $id,
+            'column' => $key,
+            'referencedColumn' => $column,
         ];
 
         reset($this->columns);
@@ -108,7 +108,7 @@ class MysqlBlueprint extends Blueprint
 
         $key = key($this->relationships);
 
-        $this->relationships[$key][] = $table;
+        $this->relationships[$key]['referencedTable'] = $table;
 
         reset($this->relationships);
 
@@ -116,12 +116,20 @@ class MysqlBlueprint extends Blueprint
     }
 
     /**
-     * @param $id
+     * @param $action
      *
      * @return $this
      */
-    public function onUpdate($id): Blueprint
+    public function onUpdate($action): Blueprint
     {
+        end($this->relationships);
+
+        $key = key($this->relationships);
+
+        $this->relationships[$key]['update'] = $action;
+
+        reset($this->relationships);
+
         return $this;
     }
 
@@ -132,6 +140,14 @@ class MysqlBlueprint extends Blueprint
      */
     public function onDelete($action): Blueprint
     {
+        end($this->relationships);
+
+        $key = key($this->relationships);
+
+        $this->relationships[$key]['delete'] = $action;
+
+        reset($this->relationships);
+
         return $this;
     }
 }
