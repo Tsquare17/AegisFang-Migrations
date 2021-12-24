@@ -5,6 +5,16 @@ namespace AegisFang\Migrations\Table;
 abstract class Blueprint
 {
     /**
+     * @var null|string
+     */
+    public $engine = null;
+
+    /**
+     * @var null|string
+     */
+    public $charset = null;
+
+    /**
      * @var string
      */
     public $id;
@@ -182,4 +192,28 @@ abstract class Blueprint
      * @return $this
      */
     abstract public function onDelete($action): self;
+
+    /**
+     * @param string $engine
+     *
+     * @return $this
+     */
+    public function setEngine(string $engine): self
+    {
+        $this->engine = $engine;
+
+        return $this;
+    }
+
+    /**
+     * @param string $charset
+     *
+     * @return $this
+     */
+    public function setCharset(string $charset): self
+    {
+        $this->charset = $charset;
+
+        return $this;
+    }
 }

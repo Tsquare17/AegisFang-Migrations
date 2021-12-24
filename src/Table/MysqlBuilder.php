@@ -24,6 +24,14 @@ class MysqlBuilder extends Builder
         $this->setColumns();
         $this->closeTable();
 
+        if ($this->engine) {
+            $this->statement .= " ENGINE={$this->engine}";
+        }
+
+        if ($this->charset) {
+            $this->statement .= " DEFAULT CHARSET={$this->charset}";
+        }
+
         return $this->execute();
     }
 
@@ -100,5 +108,12 @@ class MysqlBuilder extends Builder
         $drop->statement(self::DROPTABLE . " {$table}");
 
         return $drop->execute();
+    }
+
+    public function useEngine(string $engine)
+    {
+        $this->engine = $engine;
+
+        return $this;
     }
 }

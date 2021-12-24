@@ -36,6 +36,16 @@ abstract class Builder
      */
     protected $statement;
 
+    /**
+     * @var string
+     */
+    protected $engine;
+
+    /**
+     * @var string
+     */
+    protected $charset;
+
     protected const CREATETABLE = self::CREATETABLE;
     protected const DROPTABLE = self::DROPTABLE;
     protected const PRIMARYKEY = self::PRIMARYKEY;
@@ -55,6 +65,8 @@ abstract class Builder
             $this->id = $blueprint->id ?: 'id';
             $this->columns = $blueprint->columns;
             $this->relationships = $blueprint->relationships;
+            $this->engine = $blueprint->engine;
+            $this->charset = $blueprint->charset;
         }
     }
 
