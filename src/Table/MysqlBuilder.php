@@ -104,16 +104,9 @@ class MysqlBuilder extends Builder
      */
     public static function destroy(AdapterInterface $connectionAdapter, string $table): bool
     {
-        $drop = new self($connectionAdapter, $table, new MysqlBlueprint());
+        $drop = new self($connectionAdapter, new MysqlBlueprint());
         $drop->statement(self::DROPTABLE . " {$table}");
 
         return $drop->execute();
-    }
-
-    public function useEngine(string $engine)
-    {
-        $this->engine = $engine;
-
-        return $this;
     }
 }

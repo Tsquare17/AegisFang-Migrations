@@ -46,6 +46,11 @@ abstract class Builder
      */
     protected $charset;
 
+    /**
+     * @var Blueprint
+     */
+    protected $blueprint;
+
     protected const CREATETABLE = self::CREATETABLE;
     protected const DROPTABLE = self::DROPTABLE;
     protected const PRIMARYKEY = self::PRIMARYKEY;
@@ -53,27 +58,24 @@ abstract class Builder
 
     /**
      * @param AdapterInterface $adapter
-     * @param string $table
      * @param Blueprint|null $blueprint
      */
-    public function __construct(AdapterInterface $adapter, string $table, Blueprint $blueprint = null)
+    public function __construct(AdapterInterface $adapter, Blueprint $blueprint)
     {
         $this->connectionAdapter = $adapter;
-        $this->table = $table;
 
-        if ($blueprint) {
-            $this->id = $blueprint->id ?: 'id';
-            $this->columns = $blueprint->columns;
-            $this->relationships = $blueprint->relationships;
-            $this->engine = $blueprint->engine;
-            $this->charset = $blueprint->charset;
-        }
+        $this->initializeBlueprintProperties($blueprint);
     }
 
-    /**
-     * @return bool
-     */
-    abstract public function createTable(): bool;
+    public function initializeBlueprintProperties(Blueprint $blueprint): void
+    {
+        $this->table = $blueprint->action['table'];
+        $this->id = $blueprint->id ?: 'id';
+        $this->columns = $blueprint->columns;
+        $this->relationships = $blueprint->relationships;
+        $this->engine = $blueprint->engine;
+        $this->charset = $blueprint->charset;
+    }
 
     /**
      * Create foreign key relationships.

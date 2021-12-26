@@ -7,10 +7,16 @@ use AegisFang\Migrations\Table\Blueprint;
 
 class MigrationTest extends Migration
 {
-    public function table(Blueprint $blueprint): Blueprint
+    public function up(Blueprint $blueprint): Blueprint
     {
-        $blueprint->string('test');
+        $table = $blueprint::create('migration')
+            ->string('test');
 
-        return $blueprint;
+        return $table;
+    }
+
+    public function down(Blueprint $blueprint): Blueprint
+    {
+        return $blueprint::drop('migration');
     }
 }

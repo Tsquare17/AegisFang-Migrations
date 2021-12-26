@@ -4,6 +4,11 @@ namespace AegisFang\Migrations\Table;
 
 abstract class Blueprint
 {
+    public $action = [
+        'action' => null,
+        'table' => null,
+    ];
+
     /**
      * @var null|string
      */
@@ -29,6 +34,48 @@ abstract class Blueprint
      */
     public $relationships = [];
 
+
+    /**
+     * @param string $table
+     *
+     * @return Blueprint
+     */
+    public static function create(string $table): Blueprint
+    {
+        $blueprint = new static();
+
+        $blueprint->action = self::blueprintAction($table, 'create');
+
+        return $blueprint;
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return static
+     */
+    public static function drop(string $table): Blueprint
+    {
+        $blueprint = new static();
+
+        $blueprint->action = self::blueprintAction($table, 'drop');
+
+        return $blueprint;
+    }
+
+    /**
+     * @param string $table
+     * @param string $action
+     *
+     * @return string[]
+     */
+    protected static function blueprintAction(string $table, string $action): array
+    {
+        return [
+            'action' => $action,
+            'table' => $table,
+        ];
+    }
 
     /**
      * @param string $id

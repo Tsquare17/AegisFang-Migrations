@@ -4,6 +4,7 @@ namespace AegisFang\Migrations;
 
 use AegisFang\Migrations\Driver\AdapterInterface;
 use AegisFang\Migrations\Table\Blueprint;
+use AegisFang\Migrations\Table\Builder;
 
 abstract class Migration
 {
@@ -26,6 +27,11 @@ abstract class Migration
      * @var string
      */
     protected $blueprint;
+
+    /**
+     * @var Builder
+     */
+    protected $table;
 
 
     /**
@@ -50,20 +56,44 @@ abstract class Migration
     /**
      * @param Blueprint $blueprint
      *
-     * @return Blueprint
+     * @return mixed
      */
-    abstract public function table(Blueprint $blueprint): Blueprint;
+    abstract public function up(Blueprint $blueprint);
 
     /**
      * @return bool
      */
-    public function make(): bool
+    final public function run(): bool
     {
-        $table = new $this->builder($this->connection, $this->tableName, $this->table(new $this->blueprint()));
+        $blueprint = $this->up(new $this->blueprint());
 
-        $isCreated = $table->createTable();
+        $this->table = new $this->builder($this->connection, $blueprint);
 
-        $table->createRelationships();
+        return $this->{$blueprint->action['action']}();
+    }
+
+    /**
+     * @return Blueprint
+     */
+    abstract public function down(Blueprint $blueprint);
+
+    final public function reverse(): bool
+    {
+        $blueprint = $this->down(new $this->blueprint());
+
+        $this->table = new $this->builder($this->connection, $blueprint);
+
+        return $this->{$blueprint->action['action']}();
+    }
+
+    /**
+     * @return bool
+     */
+    final public function create(): bool
+    {
+        $isCreated = $this->table->createTable();
+
+        $this->table->createRelationships();
 
         return $isCreated;
     }
@@ -71,7 +101,7 @@ abstract class Migration
     /**
      * @return bool
      */
-    public function unmake(): bool
+    final public function drop(): bool
     {
         return call_user_func([$this->builder, 'destroy'], $this->connection, $this->tableName);
     }

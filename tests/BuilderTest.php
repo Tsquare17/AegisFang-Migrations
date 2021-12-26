@@ -31,13 +31,13 @@ class BuilderTest extends TestCase
     /** @test */
     public function can_create_table(): void
     {
-        $blueprint = new MysqlBlueprint();
-        $blueprint->id('test_id');
-        $blueprint->string('testcol', 100);
-        $blueprint->int('testint', true, true);
-        $blueprint->text('text_col');
+        $blueprint = MysqlBlueprint::create('aegistest')
+            ->id('test_id')
+            ->string('testcol', 100)
+            ->int('testint', true, true)
+            ->text('text_col');
 
-        $table = new MysqlBuilder($this->connection, 'aegistest', $blueprint);
+        $table = new MysqlBuilder($this->connection, $blueprint);
         $isCreated = $table->createTable();
 
         $this->assertTrue($isCreated);
@@ -46,10 +46,10 @@ class BuilderTest extends TestCase
     /** @test */
     public function cannot_create_already_existing_table()
     {
-        $blueprint = new MysqlBlueprint();
-        $blueprint->id('test_id');
+        $blueprint = MysqlBlueprint::create('aegistest')
+            ->id('test_id');
 
-        $table = new MysqlBuilder($this->connection, 'aegistest', $blueprint);
+        $table = new MysqlBuilder($this->connection, $blueprint);
         $isCreated = $table->createTable();
 
         $this->assertFalse($isCreated);
@@ -58,13 +58,12 @@ class BuilderTest extends TestCase
     /** @test */
     public function can_create_table_with_all_integer_types(): void
     {
-        $blueprint = new MysqlBlueprint();
+        $blueprint = MysqlBlueprint::create('int_test')
+            ->tinyint('tiny_col')
+            ->int('int_col')
+            ->bigint('big_col');
 
-        $blueprint->tinyint('tiny_col');
-        $blueprint->int('int_col');
-        $blueprint->bigint('big_col');
-
-        $table = new MysqlBuilder($this->connection, 'int_test', $blueprint);
+        $table = new MysqlBuilder($this->connection, $blueprint);
         $isCreated = $table->createTable();
 
         $this->assertTrue($isCreated);
@@ -73,18 +72,18 @@ class BuilderTest extends TestCase
     /** @test */
     public function can_create_table_with_relationship(): void
     {
-        $blueprint = new MysqlBlueprint();
-        $blueprint->int('foo_id');
-        $table = new MysqlBuilder($this->connection, 'foo', $blueprint);
+        $blueprint = MysqlBlueprint::create('foo')
+            ->int('foo_id');
+        $table = new MysqlBuilder($this->connection, $blueprint);
         $table->createTable();
 
-        $blueprint = new MysqlBlueprint();
-        $blueprint->int('foo_id')
+        $blueprint = MysqlBlueprint::create('bar')
+            ->int('foo_id')
             ->references('foo_id')
             ->on('foo')
             ->onUpdate('CASCADE')
             ->onDelete('CASCADE');
-        $table = new MysqlBuilder($this->connection, 'bar', $blueprint);
+        $table = new MysqlBuilder($this->connection, $blueprint);
         $isCreated = $table->createTable();
         $table->createRelationships();
 
@@ -104,11 +103,11 @@ class BuilderTest extends TestCase
             '\AegisFang\Migrations\Table\MysqlBlueprint'
         );
 
-        $isCreated = $migration->make();
+        $isCreated = $migration->run();
 
         $this->assertTrue($isCreated);
 
-        $isDestroyed = $migration->unmake();
+        $isDestroyed = $migration->reverse();
 
         $this->assertTrue($isDestroyed);
     }
