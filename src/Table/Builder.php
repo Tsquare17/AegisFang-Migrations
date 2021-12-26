@@ -78,9 +78,19 @@ abstract class Builder
     }
 
     /**
+     * @return bool
+     */
+    abstract public function createTable(): bool;
+
+    /**
      * Create foreign key relationships.
      */
     abstract public function createRelationships(): void;
+
+    /**
+     * @return bool
+     */
+    abstract public function updateTable(): bool;
 
     /**
      * @return bool

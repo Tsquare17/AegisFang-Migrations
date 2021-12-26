@@ -6,7 +6,8 @@ use AegisFang\Migrations\Driver\AdapterInterface;
 use AegisFang\Migrations\Driver\MysqlConnectionAdapter;
 use AegisFang\Migrations\Table\MysqlBlueprint;
 use AegisFang\Migrations\Table\MysqlBuilder;
-use AegisFang\Tests\Fixtures\MigrationTest;
+use AegisFang\Tests\Fixtures\TableUpdateMigration;
+use AegisFang\Tests\Fixtures\TestMigration;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
@@ -96,9 +97,8 @@ class BuilderTest extends TestCase
     /** @test */
     public function can_run_migration(): void
     {
-        $migration = new MigrationTest(
+        $migration = new TestMigration(
             $this->connection,
-            'migration',
             '\AegisFang\Migrations\Table\MysqlBuilder',
             '\AegisFang\Migrations\Table\MysqlBlueprint'
         );
@@ -106,6 +106,30 @@ class BuilderTest extends TestCase
         $isCreated = $migration->run();
 
         $this->assertTrue($isCreated);
+    }
+
+    /** @test */
+    public function can_update_table(): void
+    {
+        $migration = new TableUpdateMigration(
+            $this->connection,
+            '\AegisFang\Migrations\Table\MysqlBuilder',
+            '\AegisFang\Migrations\Table\MysqlBlueprint'
+        );
+
+        $isUpdated = $migration->run();
+
+        $this->assertTrue($isUpdated);
+    }
+
+    /** @test */
+    public function can_run_migration_down(): void
+    {
+        $migration = new TableUpdateMigration(
+            $this->connection,
+            '\AegisFang\Migrations\Table\MysqlBuilder',
+            '\AegisFang\Migrations\Table\MysqlBlueprint'
+        );
 
         $isDestroyed = $migration->reverse();
 

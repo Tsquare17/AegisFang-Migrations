@@ -3,13 +3,13 @@
 namespace PHPSTORM_META {
     expectedArguments(
         \AegisFang\Migrations\Migration::__construct(),
-        2,
+        1,
         '\AegisFang\Migrations\Table\MysqlBuilder',
     );
 
     expectedArguments(
         \AegisFang\Migrations\Migration::__construct(),
-        3,
+        2,
         '\AegisFang\Migrations\Table\MysqlBlueprint',
     );
 }

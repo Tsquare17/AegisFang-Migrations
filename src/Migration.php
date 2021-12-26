@@ -16,15 +16,15 @@ abstract class Migration
     /**
      * @var string
      */
-    protected $tableName;
-
-    /**
-     * @var string
-     */
     protected $builder;
 
     /**
      * @var string
+     */
+    protected $blueprintClass;
+
+    /**
+     * @var Blueprint
      */
     protected $blueprint;
 
@@ -38,19 +38,16 @@ abstract class Migration
      * Migration constructor.
      *
      * @param AdapterInterface $connection
-     * @param string $tableName
      * @param string $builder
-     * @param string $blueprint
+     * @param string $blueprintClass
      */
-    public function __construct(AdapterInterface $connection, string $tableName, string $builder, string $blueprint)
+    public function __construct(AdapterInterface $connection, string $builder, string $blueprintClass)
     {
         $this->connection = $connection;
 
-        $this->tableName = $tableName;
-
         $this->builder = $builder;
 
-        $this->blueprint = $blueprint;
+        $this->blueprintClass = $blueprintClass;
     }
 
     /**
@@ -65,11 +62,11 @@ abstract class Migration
      */
     final public function run(): bool
     {
-        $blueprint = $this->up(new $this->blueprint());
+        $this->blueprint = $this->up(new $this->blueprintClass());
 
-        $this->table = new $this->builder($this->connection, $blueprint);
+        $this->table = new $this->builder($this->connection, $this->blueprint);
 
-        return $this->{$blueprint->action['action']}();
+        return $this->{$this->blueprint->action['action']}();
     }
 
     /**
@@ -79,11 +76,11 @@ abstract class Migration
 
     final public function reverse(): bool
     {
-        $blueprint = $this->down(new $this->blueprint());
+        $this->blueprint = $this->down(new $this->blueprintClass());
 
-        $this->table = new $this->builder($this->connection, $blueprint);
+        $this->table = new $this->builder($this->connection, $this->blueprint);
 
-        return $this->{$blueprint->action['action']}();
+        return $this->{$this->blueprint->action['action']}();
     }
 
     /**
@@ -98,12 +95,17 @@ abstract class Migration
         return $isCreated;
     }
 
+    final public function update(): bool
+    {
+        return $this->table->updateTable();
+    }
+
     /**
      * @return bool
      */
     final public function drop(): bool
     {
-        return call_user_func([$this->builder, 'destroy'], $this->connection, $this->tableName);
+        return call_user_func([$this->builder, 'destroy'], $this->connection, $this->blueprint->action['table']);
     }
 
     /**
@@ -113,7 +115,7 @@ abstract class Migration
      */
     final public function tableExists(string $table): bool
     {
-        $blueprint = new $this->blueprint();
+        $blueprint = new $this->blueprintClass();
         $blueprint->action['table'] = $table;
 
         $this->table = new $this->builder($this->connection, $blueprint);
@@ -129,7 +131,7 @@ abstract class Migration
      */
     public function columnExists(string $column, string $table): bool
     {
-        $blueprint = new $this->blueprint();
+        $blueprint = new $this->blueprintClass();
         $blueprint->action['table'] = $table;
 
         $this->table = new $this->builder($this->connection, $blueprint);

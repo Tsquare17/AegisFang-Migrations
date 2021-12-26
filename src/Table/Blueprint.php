@@ -32,6 +32,16 @@ abstract class Blueprint
     /**
      * @var array
      */
+    public $updateColumns = [];
+
+    /**
+     * @var array
+     */
+    public $dropColums = [];
+
+    /**
+     * @var array
+     */
     public $relationships = [];
 
 
@@ -42,11 +52,17 @@ abstract class Blueprint
      */
     public static function create(string $table): Blueprint
     {
-        $blueprint = new static();
+        return self::newStaticBlueprint($table, 'create');
+    }
 
-        $blueprint->action = self::blueprintAction($table, 'create');
-
-        return $blueprint;
+    /**
+     * @param string $table
+     *
+     * @return Blueprint
+     */
+    public static function update(string $table): Blueprint
+    {
+        return self::newStaticBlueprint($table, 'update');
     }
 
     /**
@@ -56,9 +72,20 @@ abstract class Blueprint
      */
     public static function drop(string $table): Blueprint
     {
+        return self::newStaticBlueprint($table, 'drop');
+    }
+
+    /**
+     * @param $table
+     * @param $action
+     *
+     * @return static
+     */
+    protected static function newStaticBlueprint($table, $action): Blueprint
+    {
         $blueprint = new static();
 
-        $blueprint->action = self::blueprintAction($table, 'drop');
+        $blueprint->action = self::blueprintAction($table, $action);
 
         return $blueprint;
     }
@@ -104,6 +131,20 @@ abstract class Blueprint
      * @return $this
      */
     abstract public function text(string $column, int $length = 65535): self;
+
+    /**
+     * @param Blueprint $blueprint
+     *
+     * @return $this
+     */
+    abstract public function change(Blueprint $blueprint): self;
+
+    /**
+     * @param string $column
+     *
+     * @return $this
+     */
+    abstract public function dropColumn(string $column): self;
 
     /**
      * @return $this

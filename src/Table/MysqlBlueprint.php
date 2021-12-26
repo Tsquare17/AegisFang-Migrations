@@ -31,6 +31,40 @@ class MysqlBlueprint extends Blueprint
     }
 
     /**
+     * @param Blueprint $blueprint
+     *
+     * @return Blueprint
+     */
+    public function change(Blueprint $blueprint): Blueprint
+    {
+        end($this->columns);
+
+        $key = key($this->columns);
+
+        $blueprintKey = key($blueprint->columns);
+
+        unset($this->columns[$key]);
+
+        $this->columns['MODIFY ' . $key] = [$blueprint->columns[$blueprintKey][0]];
+
+        reset($this->columns);
+
+        return $this;
+    }
+
+    /**
+     * @return Blueprint
+     */
+    public function dropColumn(string $column): Blueprint
+    {
+        $key = 'DROP COLUMN ' . $column;
+
+        $this->columns[$key] = [''];
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function unique(): Blueprint

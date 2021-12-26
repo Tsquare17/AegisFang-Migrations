@@ -70,11 +70,15 @@ class MysqlBuilder extends Builder
     /**
      * @return void
      */
-    public function setColumns(): void
+    public function setColumns($setPrimaryKey = true): void
     {
         $i = 0;
         $len = count($this->columns);
-        $this->statement .= "{$this->id} " . self::PRIMARYKEY . ', ';
+
+        if ($setPrimaryKey) {
+            $this->statement .= "{$this->id} " . self::PRIMARYKEY . ', ';
+        }
+
         foreach ($this->columns as $column => $options) {
             $this->statement .= "{$column} ";
             foreach ($options as $option) {
@@ -108,5 +112,16 @@ class MysqlBuilder extends Builder
         $drop->statement(self::DROPTABLE . " {$table}");
 
         return $drop->execute();
+    }
+
+    /**
+     * @return bool
+     */
+    public function updateTable(): bool
+    {
+        $this->statement = "ALTER TABLE `{$this->table}` ";
+        $this->setColumns(false);
+
+        return $this->execute();
     }
 }
