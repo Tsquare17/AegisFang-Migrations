@@ -6,8 +6,6 @@ use AegisFang\Migrations\Driver\AdapterInterface;
 use AegisFang\Migrations\Driver\MysqlConnectionAdapter;
 use AegisFang\Migrations\Table\MysqlBlueprint;
 use AegisFang\Migrations\Table\MysqlBuilder;
-use AegisFang\Tests\Fixtures\TableUpdateMigration;
-use AegisFang\Tests\Fixtures\TestMigration;
 use PDO;
 use PHPUnit\Framework\TestCase;
 
@@ -92,48 +90,6 @@ class BuilderTest extends TestCase
 
         $foreignKeyExists = $table->foreignKeyExists('foo_id', 'foo', 'foo_id');
         $this->assertTrue($foreignKeyExists);
-    }
-
-    /** @test */
-    public function can_run_migration(): void
-    {
-        $migration = new TestMigration(
-            $this->connection,
-            '\AegisFang\Migrations\Table\MysqlBuilder',
-            '\AegisFang\Migrations\Table\MysqlBlueprint'
-        );
-
-        $isCreated = $migration->run();
-
-        $this->assertTrue($isCreated);
-    }
-
-    /** @test */
-    public function can_update_table(): void
-    {
-        $migration = new TableUpdateMigration(
-            $this->connection,
-            '\AegisFang\Migrations\Table\MysqlBuilder',
-            '\AegisFang\Migrations\Table\MysqlBlueprint'
-        );
-
-        $isUpdated = $migration->run();
-
-        $this->assertTrue($isUpdated);
-    }
-
-    /** @test */
-    public function can_run_migration_down(): void
-    {
-        $migration = new TableUpdateMigration(
-            $this->connection,
-            '\AegisFang\Migrations\Table\MysqlBuilder',
-            '\AegisFang\Migrations\Table\MysqlBlueprint'
-        );
-
-        $isDestroyed = $migration->reverse();
-
-        $this->assertTrue($isDestroyed);
     }
 
     /** @test */
