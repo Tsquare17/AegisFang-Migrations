@@ -24,7 +24,7 @@ class MigrationTest extends TestCase
             getenv('DB_PASSWORD')
         );
 
-        $this->connection = new MysqlConnectionAdapter($pdo, 'aegisfang_migrations_test');
+        $this->connection = new MysqlConnectionAdapter($pdo, getenv('DB_NAME'));
     }
 
     /** @test */
