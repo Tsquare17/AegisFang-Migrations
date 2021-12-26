@@ -17,6 +17,12 @@ class MigrationTest extends Migration
 
     public function down(Blueprint $blueprint): Blueprint
     {
-        return $blueprint::drop('migration');
+        if ($this->tableExists('migration')) {
+            if ($this->columnExists('test', 'migration')) {
+                return $blueprint::drop('migration');
+            }
+        }
+
+        return $blueprint;
     }
 }

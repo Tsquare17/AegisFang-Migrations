@@ -105,4 +105,35 @@ abstract class Migration
     {
         return call_user_func([$this->builder, 'destroy'], $this->connection, $this->tableName);
     }
+
+    /**
+     * @param string $table
+     *
+     * @return bool
+     */
+    final public function tableExists(string $table): bool
+    {
+        $blueprint = new $this->blueprint();
+        $blueprint->action['table'] = $table;
+
+        $this->table = new $this->builder($this->connection, $blueprint);
+
+        return $this->table->tableExists();
+    }
+
+    /**
+     * @param string $column
+     * @param string $table
+     *
+     * @return bool
+     */
+    public function columnExists(string $column, string $table): bool
+    {
+        $blueprint = new $this->blueprint();
+        $blueprint->action['table'] = $table;
+
+        $this->table = new $this->builder($this->connection, $blueprint);
+
+        return $this->table->columnExists($column);
+    }
 }
