@@ -43,9 +43,13 @@ class MysqlBlueprint extends Blueprint
 
         $blueprintKey = key($blueprint->columns);
 
-        unset($this->columns[$key]);
+        if ($key !== $blueprintKey) {
+            $this->columns['CHANGE ' . $key . ' ' . $blueprintKey] = [$blueprint->columns[$blueprintKey][0]];
+        } else {
+            $this->columns['MODIFY ' . $key] = [$blueprint->columns[$blueprintKey][0]];
+        }
 
-        $this->columns['MODIFY ' . $key] = [$blueprint->columns[$blueprintKey][0]];
+        unset($this->columns[$key]);
 
         reset($this->columns);
 

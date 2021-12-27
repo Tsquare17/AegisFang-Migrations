@@ -11,7 +11,7 @@ class TableUpdateMigration extends Migration
     {
         $table = $blueprint::update('migration')
             ->string('test')
-            ->change($blueprint->int('test'))
+            ->change($blueprint->int('test_changed'))
             ->dropColumn('drop_column');
 
         return $table;

@@ -16,15 +16,22 @@ class MigrationTest extends TestCase
      */
     protected $connection;
 
+    /**
+     * @var string
+     */
+    protected $dbName;
+
     public function setUp(): void
     {
+        $this->dbName = getenv('DB_NAME');
+
         $pdo = new PDO(
-            getenv('DB_CONNECTION') . ':host=' . getenv('DB_HOST') . ';dbname=' . getenv('DB_NAME'),
+            getenv('DB_CONNECTION') . ':host=' . getenv('DB_HOST') . ';dbname=' . $this->dbName,
             getenv('DB_USERNAME'),
             getenv('DB_PASSWORD')
         );
 
-        $this->connection = new MysqlConnectionAdapter($pdo, getenv('DB_NAME'));
+        $this->connection = new MysqlConnectionAdapter($pdo, $this->dbName);
     }
 
     /** @test */
@@ -53,6 +60,10 @@ class MigrationTest extends TestCase
         $isUpdated = $migration->run();
 
         $this->assertTrue($isUpdated);
+
+        $this->assertTrue($migration->columnExists('test_changed', 'migration'));
+
+        $this->assertNotTrue($migration->columnExists('drop_column', 'migration'));
     }
 
     /** @test */
