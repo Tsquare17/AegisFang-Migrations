@@ -57,6 +57,8 @@ class MysqlBlueprint extends Blueprint
     }
 
     /**
+     * @param string $column
+     *
      * @return Blueprint
      */
     public function dropColumn(string $column): Blueprint
@@ -120,7 +122,6 @@ class MysqlBlueprint extends Blueprint
      */
     public function references(string $column): Blueprint
     {
-        // Set foreign key on last registered column, referencing $column.
         end($this->columns);
 
         $key = key($this->columns);
@@ -142,13 +143,7 @@ class MysqlBlueprint extends Blueprint
      */
     public function on(string $table): Blueprint
     {
-        end($this->relationships);
-
-        $key = key($this->relationships);
-
-        $this->relationships[$key]['referencedTable'] = $table;
-
-        reset($this->relationships);
+        $this->setOnLastColumnKey($this->relationships, 'referencedTable', $table);
 
         return $this;
     }
@@ -160,13 +155,7 @@ class MysqlBlueprint extends Blueprint
      */
     public function onUpdate(string $action): Blueprint
     {
-        end($this->relationships);
-
-        $key = key($this->relationships);
-
-        $this->relationships[$key]['update'] = $action;
-
-        reset($this->relationships);
+        $this->setOnLastColumnKey($this->relationships, 'update', $action);
 
         return $this;
     }
@@ -178,14 +167,26 @@ class MysqlBlueprint extends Blueprint
      */
     public function onDelete(string $action): Blueprint
     {
-        end($this->relationships);
-
-        $key = key($this->relationships);
-
-        $this->relationships[$key]['delete'] = $action;
-
-        reset($this->relationships);
+        $this->setOnLastColumnKey($this->relationships, 'delete', $action);
 
         return $this;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param $value
+     *
+     * @return void
+     */
+    protected function setOnLastColumnKey(array &$array, string $key, $value): void
+    {
+        end($array);
+
+        $arrayKey = key($array);
+
+        $array[$arrayKey][$key] = $value;
+
+        reset($array);
     }
 }
