@@ -228,11 +228,11 @@ abstract class Blueprint
     ): self;
 
     /**
-     * @param $column
+     * @param string $column
      *
      * @return $this
      */
-    public function references($column): self
+    public function references(string $column): self
     {
         // Set foreign key on last registered column, referencing $column.
         end($this->columns);
@@ -268,18 +268,18 @@ abstract class Blueprint
     }
 
     /**
-     * @param $action
+     * @param string $action
      *
      * @return $this
      */
-    abstract public function onUpdate($action): self;
+    abstract public function onUpdate(string $action): self;
 
     /**
-     * @param $action
+     * @param string $action
      *
      * @return $this
      */
-    abstract public function onDelete($action): self;
+    abstract public function onDelete(string $action): self;
 
     /**
      * @param string $engine
