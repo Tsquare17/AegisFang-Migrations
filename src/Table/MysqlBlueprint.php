@@ -143,7 +143,7 @@ class MysqlBlueprint extends Blueprint
      */
     public function on(string $table): Blueprint
     {
-        $this->setOnLastColumnKey($this->relationships, 'referencedTable', $table);
+        $this->setOnLastArrayKey($this->relationships, 'referencedTable', $table);
 
         return $this;
     }
@@ -155,7 +155,7 @@ class MysqlBlueprint extends Blueprint
      */
     public function onUpdate(string $action): Blueprint
     {
-        $this->setOnLastColumnKey($this->relationships, 'update', $action);
+        $this->setOnLastArrayKey($this->relationships, 'update', $action);
 
         return $this;
     }
@@ -167,7 +167,7 @@ class MysqlBlueprint extends Blueprint
      */
     public function onDelete(string $action): Blueprint
     {
-        $this->setOnLastColumnKey($this->relationships, 'delete', $action);
+        $this->setOnLastArrayKey($this->relationships, 'delete', $action);
 
         return $this;
     }
@@ -179,7 +179,7 @@ class MysqlBlueprint extends Blueprint
      *
      * @return void
      */
-    protected function setOnLastColumnKey(array &$array, string $key, $value): void
+    protected function setOnLastArrayKey(array &$array, string $key, $value): void
     {
         end($array);
 
